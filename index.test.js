@@ -164,7 +164,7 @@ describe('Service Worker URL validation', () => {
       addEventListener: (event, callback) => {
         if (event === 'fetch') fetchListener = callback;
       },
-      location: { origin: 'https://sankalpsinghcoder-ai.github.io' }
+      location: { origin: 'https://mukilkarki.github.io' }
     };
 
     const runSW = new Function('self', 'caches', 'fetch', swCode);
