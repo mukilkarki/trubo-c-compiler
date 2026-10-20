@@ -163,6 +163,21 @@
 
 <style>
   :root {
+    --bg-dark: #eff6ff;
+    --bg-surface: #ffffff;
+    --bg-elevated: #eef4ff;
+    --border-color: #d8e2f1;
+    --cyan-accent: #2563eb;
+    --teal-accent: #0ea5a4;
+    --text-primary: #334155;
+    --text-bright: #0f172a;
+    --font-mono: 'Fira Code', Consolas, monospace;
+    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+    --shadow-soft: 0 12px 30px rgba(37, 99, 235, 0.12);
+    --body-gradient: linear-gradient(180deg, #f8fbff 0%, #edf5ff 100%);
+  }
+
+  body[data-theme="dark"] {
     --bg-dark: #0b0c10;
     --bg-surface: #14171d;
     --bg-elevated: #1f2833;
@@ -171,8 +186,8 @@
     --teal-accent: #45a29e;
     --text-primary: #c5c6c7;
     --text-bright: #ffffff;
-    --font-mono: 'Fira Code', Consolas, monospace;
-    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+    --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.6);
+    --body-gradient: linear-gradient(180deg, #091119 0%, #0b0c10 100%);
   }
 
   * {
@@ -182,7 +197,7 @@
   }
 
   body {
-    background-color: var(--bg-dark);
+    background: var(--body-gradient);
     color: var(--text-primary);
     font-family: var(--font-sans);
     min-height: 100vh;
@@ -192,6 +207,7 @@
     padding-top: 20px;
     padding-bottom: 40px;
     overflow-x: hidden;
+    transition: background 0.25s ease, color 0.25s ease;
   }
 
   /* Main Container */
@@ -262,6 +278,7 @@
     cursor: pointer;
     transition: all 0.15s ease;
     user-select: none;
+    box-shadow: var(--shadow-soft);
   }
 
   .tool-btn:hover {
@@ -281,8 +298,8 @@
 
   /* Launch Button Card */
   #start-btn {
-    background: linear-gradient(135deg, #45a29e 0%, #66fcf1 100%);
-    color: #0b0c10;
+    background: linear-gradient(135deg, var(--teal-accent) 0%, var(--cyan-accent) 100%);
+    color: #ffffff;
     font-size: 1.15rem;
     font-weight: 700;
     padding: 16px 36px;
@@ -294,12 +311,12 @@
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    box-shadow: 0 6px 20px rgba(102, 252, 241, 0.3);
+    box-shadow: 0 10px 25px rgba(37, 99, 235, 0.2);
   }
 
   #start-btn:hover {
     transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 8px 25px rgba(102, 252, 241, 0.5);
+    box-shadow: 0 10px 30px rgba(37, 99, 235, 0.28);
   }
 
   /* Emulator Container */
@@ -407,13 +424,13 @@
   }
 
   .modal-dialog {
-    background-color: #14181f;
+    background-color: var(--bg-surface);
     border: 2px solid var(--teal-accent);
     border-radius: 10px;
     width: 100%;
     max-width: 680px;
     padding: 20px;
-    box-shadow: 0 16px 45px rgba(0, 0, 0, 0.8);
+    box-shadow: var(--shadow-soft);
     display: flex;
     flex-direction: column;
     gap: 14px;
@@ -451,8 +468,8 @@
   .code-textarea {
     width: 100%;
     height: 240px;
-    background-color: #0b0c10;
-    color: #66fcf1;
+    background-color: var(--bg-dark);
+    color: var(--cyan-accent);
     border: 1px solid var(--border-color);
     border-radius: 6px;
     padding: 12px;
@@ -540,9 +557,9 @@
     bottom: 24px;
     left: 50%;
     transform: translateX(-50%) translateY(30px);
-    background-color: #171d24;
+    background-color: var(--bg-surface);
     border: 1px solid var(--teal-accent);
-    color: var(--cyan-accent);
+    color: var(--text-bright);
     padding: 10px 20px;
     border-radius: 8px;
     font-family: var(--font-mono);
@@ -551,7 +568,7 @@
     pointer-events: none;
     transition: all 0.25s ease;
     z-index: 1000000;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+    box-shadow: var(--shadow-soft);
   }
   .toast-box.show {
     opacity: 1;
@@ -818,6 +835,9 @@
     <button type="button" id="btn-open-paste" class="tool-btn highlight" title="Paste C/C++ Code (Shift+Insert or Ctrl+Shift+V)">
       📂 <span>Paste/Import Code (use this if mobile users | desktop users can also use it)</span>
     </button>
+    <button type="button" id="theme-toggle" class="tool-btn" title="Toggle light and dark theme">
+      🌙 <span>Dark</span>
+    </button>
     <button type="button" id="btn-toggle-fs" class="tool-btn" title="Toggle Fullscreen (F11)">
       ⛶ <span>Fullscreen</span>
     </button>
@@ -1029,6 +1049,42 @@ void main() {
     console.warn("Storage access restricted:", e);
   }
 })();
+</script>
+
+<script>
+  (function() {
+    const body = document.body;
+    const themeToggle = document.getElementById('theme-toggle');
+
+    function setTheme(theme) {
+      const isDark = theme === 'dark';
+      body.dataset.theme = isDark ? 'dark' : 'light';
+      if (themeToggle) {
+        const label = themeToggle.querySelector('span');
+        themeToggle.innerHTML = isDark ? '☀️ <span>Light</span>' : '🌙 <span>Dark</span>';
+        themeToggle.setAttribute('aria-label', isDark ? 'Switch to light theme' : 'Switch to dark theme');
+      }
+      try {
+        localStorage.setItem('site-theme', theme);
+      } catch (error) {
+        console.warn('Theme storage unavailable:', error);
+      }
+    }
+
+    try {
+      const savedTheme = localStorage.getItem('site-theme');
+      setTheme(savedTheme === 'dark' ? 'dark' : 'light');
+    } catch (error) {
+      setTheme('light');
+    }
+
+    if (themeToggle) {
+      themeToggle.addEventListener('click', () => {
+        const nextTheme = body.dataset.theme === 'dark' ? 'light' : 'dark';
+        setTheme(nextTheme);
+      });
+    }
+  })();
 </script>
 
 <!-- js-dos scripts -->
