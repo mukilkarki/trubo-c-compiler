@@ -164,6 +164,22 @@
 
 <style>
   :root {
+    --bg-dark: #07111d;
+    --bg-surface: #0f1b2a;
+    --bg-elevated: #152638;
+    --border-color: #243b53;
+    --cyan-accent: #8bdcff;
+    --teal-accent: #47d7c1;
+    --text-primary: #dbeaf9;
+    --text-bright: #f5f9ff;
+    --font-mono: 'Fira Code', Consolas, monospace;
+    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+    --shadow-soft: 0 18px 38px rgba(5, 12, 20, 0.38);
+    --body-gradient: linear-gradient(180deg, #091522 0%, #0b1320 100%);
+    --glow-color: rgba(139, 220, 255, 0.24);
+  }
+
+  body[data-theme="light"] {
     --bg-dark: #eff6ff;
     --bg-surface: #ffffff;
     --bg-elevated: #eef4ff;
@@ -172,23 +188,9 @@
     --teal-accent: #0ea5a4;
     --text-primary: #334155;
     --text-bright: #0f172a;
-    --font-mono: 'Fira Code', Consolas, monospace;
-    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
     --shadow-soft: 0 12px 30px rgba(37, 99, 235, 0.12);
     --body-gradient: linear-gradient(180deg, #f8fbff 0%, #edf5ff 100%);
-  }
-
-  body[data-theme="dark"] {
-    --bg-dark: #0b0c10;
-    --bg-surface: #14171d;
-    --bg-elevated: #1f2833;
-    --border-color: #333f48;
-    --cyan-accent: #66fcf1;
-    --teal-accent: #45a29e;
-    --text-primary: #c5c6c7;
-    --text-bright: #ffffff;
-    --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.6);
-    --body-gradient: linear-gradient(180deg, #091119 0%, #0b0c10 100%);
+    --glow-color: rgba(37, 99, 235, 0.12);
   }
 
   * {
@@ -209,6 +211,15 @@
     padding-bottom: 40px;
     overflow-x: hidden;
     transition: background 0.25s ease, color 0.25s ease;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle at top, var(--glow-color), transparent 42%);
+    pointer-events: none;
+    z-index: -1;
   }
 
   /* Main Container */
@@ -268,11 +279,11 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    background-color: var(--bg-surface);
+    background: linear-gradient(180deg, rgba(15, 27, 42, 0.92), rgba(11, 20, 31, 0.92));
     border: 1px solid var(--border-color);
     color: var(--cyan-accent);
     padding: 8px 14px;
-    border-radius: 6px;
+    border-radius: 8px;
     font-size: 0.82rem;
     font-family: var(--font-mono);
     font-weight: 600;
@@ -283,41 +294,42 @@
   }
 
   .tool-btn:hover {
-    background-color: var(--bg-elevated);
+    background: linear-gradient(180deg, rgba(19, 36, 54, 0.96), rgba(13, 24, 36, 0.96));
     border-color: var(--teal-accent);
     transform: translateY(-1px);
   }
 
   .tool-btn.highlight {
-    background: var(--teal-accent);
-    color: var(--bg-dark);
-    border-color: var(--cyan-accent);
+    background: linear-gradient(135deg, var(--teal-accent) 0%, var(--cyan-accent) 100%);
+    color: #08131d;
+    border-color: transparent;
+    box-shadow: 0 12px 28px rgba(71, 215, 193, 0.22);
   }
   .tool-btn.highlight:hover {
-    background: var(--cyan-accent);
+    filter: brightness(1.05);
   }
 
   /* Launch Button Card */
   #start-btn {
-    background: linear-gradient(135deg, var(--teal-accent) 0%, var(--cyan-accent) 100%);
-    color: #ffffff;
+    background: linear-gradient(135deg, #47d7c1 0%, #8bdcff 100%);
+    color: #06131d;
     font-size: 1.15rem;
-    font-weight: 700;
+    font-weight: 800;
     padding: 16px 36px;
     border: none;
-    border-radius: 10px;
+    border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s ease-in-out;
     margin: 15px 0 20px 0;
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    box-shadow: 0 10px 25px rgba(37, 99, 235, 0.2);
+    box-shadow: 0 18px 35px rgba(71, 215, 193, 0.25);
   }
 
   #start-btn:hover {
     transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 10px 30px rgba(37, 99, 235, 0.28);
+    box-shadow: 0 20px 38px rgba(139, 220, 255, 0.26);
   }
 
   /* Emulator Container */
@@ -558,7 +570,7 @@
     bottom: 24px;
     left: 50%;
     transform: translateX(-50%) translateY(30px);
-    background-color: var(--bg-surface);
+    background: linear-gradient(180deg, rgba(18, 31, 46, 0.98), rgba(10, 19, 30, 0.98));
     border: 1px solid var(--teal-accent);
     color: var(--text-bright);
     padding: 10px 20px;
@@ -724,10 +736,11 @@
   }
 
   .doc-card {
-    background-color: var(--bg-surface);
+    background: linear-gradient(180deg, rgba(19, 35, 52, 0.98), rgba(13, 24, 37, 0.98));
     border: 1px solid var(--border-color);
-    border-radius: 8px;
+    border-radius: 12px;
     padding: 22px;
+    box-shadow: var(--shadow-soft);
   }
 
   .doc-card h2 {
@@ -775,11 +788,12 @@
 
   /* FAQ Accordion */
   .faq-item {
-    background-color: var(--bg-elevated);
+    background: linear-gradient(180deg, rgba(21, 38, 56, 0.98), rgba(16, 27, 41, 0.98));
     border: 1px solid var(--border-color);
-    border-radius: 6px;
+    border-radius: 10px;
     margin-bottom: 10px;
     overflow: hidden;
+    box-shadow: 0 10px 18px rgba(5, 12, 20, 0.18);
   }
   .faq-question {
     padding: 12px 16px;
@@ -1061,7 +1075,6 @@ void main() {
       const isDark = theme === 'dark';
       body.dataset.theme = isDark ? 'dark' : 'light';
       if (themeToggle) {
-        const label = themeToggle.querySelector('span');
         themeToggle.innerHTML = isDark ? '☀️ <span>Light</span>' : '🌙 <span>Dark</span>';
         themeToggle.setAttribute('aria-label', isDark ? 'Switch to light theme' : 'Switch to dark theme');
       }
@@ -1074,9 +1087,9 @@ void main() {
 
     try {
       const savedTheme = localStorage.getItem('site-theme');
-      setTheme(savedTheme === 'dark' ? 'dark' : 'light');
+      setTheme(savedTheme === 'light' ? 'light' : 'dark');
     } catch (error) {
-      setTheme('light');
+      setTheme('dark');
     }
 
     if (themeToggle) {
